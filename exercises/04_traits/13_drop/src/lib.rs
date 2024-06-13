@@ -2,6 +2,30 @@
 //  unless a certain operation has been performed on it.
 //  You can see the expected API in the tests below.
 
+pub struct DropBomb {
+    additional_op: bool,
+}
+
+impl DropBomb {
+    pub fn new() -> DropBomb {
+        DropBomb {
+            additional_op: false,
+        }
+    }
+
+    pub fn defuse(&mut self) -> () {
+        self.additional_op = true
+    }
+}
+
+impl Drop for DropBomb {
+    fn drop(&mut self) {
+        if !self.additional_op {
+            panic!("No additional operation is performed")
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
