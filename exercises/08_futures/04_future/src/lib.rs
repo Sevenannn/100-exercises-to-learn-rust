@@ -9,8 +9,13 @@ fn spawner() {
     tokio::spawn(example());
 }
 
+// Calling drop(non_send) doesn't help
+// Because when you create an async block or function,
+// Rust captures the entire lifetime of variables used within it, not just the point up to where they are dropped
 async fn example() {
-    let non_send = Rc::new(1);
+    {
+        let non_send = Rc::new(1);
+        println!("{}", non_send);
+    }
     yield_now().await;
-    println!("{}", non_send);
 }
