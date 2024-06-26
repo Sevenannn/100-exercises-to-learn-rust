@@ -8,3 +8,13 @@
 //
 // Use Rust's package registry, crates.io, to find the dependencies you need
 // (if any) to build this system.
+
+pub mod data;
+pub mod handlers;
+pub mod store;
+
+// Checklist
+// Data Model - mod data
+// Data store type - mod store
+// Handler to apply changes on data store using data received - mod handlers
+// Routes of associated handlers - mod handlers

@@ -1,0 +1,50 @@
+use crate::data::{Status, Ticket, TicketDraft};
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+use std::sync::{Arc, RwLock};
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
+pub struct TicketId(pub u64);
+
+impl std::fmt::Display for TicketId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+#[derive(Clone)]
+pub struct TicketStore {
+    tickets: BTreeMap<TicketId, Arc<RwLock<Ticket>>>,
+    counter: u64,
+}
+
+pub type SharedTicketStore = Arc<RwLock<TicketStore>>;
+
+impl TicketStore {
+    pub fn new() -> Self {
+        Self {
+            tickets: BTreeMap::new(),
+            counter: 0,
+        }
+    }
+
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> TicketId {
+        let id = TicketId(self.counter);
+        self.counter += 1;
+        let ticket = Ticket {
+            id,
+            title: ticket.title,
+            description: ticket.description,
+            status: Status::ToDo,
+        };
+        let ticket = Arc::new(RwLock::new(ticket));
+        self.tickets.insert(id, ticket);
+        id
+    }
+
+    // The `get` method should return a handle to the ticket
+    // which allows the caller to either read or modify the ticket.
+    pub fn get(&self, id: TicketId) -> Option<Arc<RwLock<Ticket>>> {
+        self.tickets.get(&id).cloned()
+    }
+}

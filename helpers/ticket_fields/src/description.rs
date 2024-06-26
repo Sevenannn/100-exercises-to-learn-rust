@@ -1,4 +1,6 @@
-#[derive(Debug, PartialEq, Clone, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, PartialEq, Clone, Eq, Deserialize, Serialize)]
 pub struct TicketDescription(String);
 
 #[derive(Debug, thiserror::Error)]
